@@ -1,1 +1,144 @@
  Desenvolvimento do jogo Pong através da programação com JavaScript, curso de introdução a lógica de programação JavaScript - Alura.
+
+
+//var bola
+let xBall = 300;
+let yBall = 200;
+let diamBall = 13;
+let ray =  diamBall / 2;
+let velocXball = 6;
+let velocYball = 6;
+
+//var racket
+let xRacket = 3;
+let yRacket = 150;
+let racketLength = 10;
+let racketHeigth = 90;
+let collision = false;
+
+//var racket opponent
+let xRacketOpponent = 588;
+let yRacketOpponent = 150;
+let speedYOpponent;
+
+//placar jogo
+let myPoints = 0;
+let opponentPoints = 0;
+
+//sons jogo
+let bat;
+let points;
+let musicTrack;
+
+//Carrega sons jogo
+function preload(){
+  bat = loadSound("raquetada.mp3");
+  points = loadSound("ponto.mp3");
+  musicTrack = loadSound("trilha.mp3");
+  
+  
+}
+//Desenha campo
+function setup() {
+  createCanvas(600, 400);
+  musicTrack.loop();
+}
+
+function draw() {
+  background(0);
+  showBall();
+  showRacket(xRacket, yRacket);
+  showRacket(xRacketOpponent, yRacketOpponent);  
+  moveBall();
+  borderCheck();
+  moveRacket();
+  librayRacketCollision(xRacket, yRacket);
+  librayRacketCollision(xRacketOpponent, yRacketOpponent);
+  moveRacketOpponent();
+  includeScore(); 
+  scorePoints();
+}
+function showBall(){
+  circle(xBall,yBall,diamBall);  
+  
+}
+function showRacket(x,y){
+  rect(x, y, racketLength, racketHeigth);
+ 
+}
+function moveBall(){
+  xBall += velocXball;
+  yBall += velocYball;
+}
+function borderCheck(){
+  
+  if (xBall + ray > width || xBall - ray < 0){
+    velocXball *= -1;
+    
+  }
+  if (yBall + ray > height || yBall - ray < 0){
+    velocYball *= -1;
+    
+  }  
+}
+function moveRacket(){
+  
+  if (keyIsDown(UP_ARROW)){
+    yRacket -= 10;
+  }
+  if (keyIsDown(DOWN_ARROW)){
+    yRacket += 10;
+  }
+  //Delimita movimentação raquete dentro do campo de jogo
+  yRacket = constrain(yRacket, 10, 310);  
+}
+function librayRacketCollision(x, y){
+  
+  collision = collideRectCircle(x, y, racketLength, racketHeigth, xBall, yBall, diamBall);
+  
+  if (collision){
+    velocXball *= -1;
+    bat.play();
+  }
+  
+}
+function moveRacketOpponent(){
+  
+   if (keyIsDown(87)){
+    yRacketOpponent -= 10;
+  }
+  if (keyIsDown(83)){
+    yRacketOpponent += 10;
+  }
+  //Delimita movimentação raquete dentro do campo de jogo
+  yRacketOpponent = constrain(yRacketOpponent, -10, 310);
+  
+  
+}
+function includeScore(){
+  textSize(18);
+  stroke(255);
+  textAlign(CENTER);
+  fill(color(255, 140, 0));
+  rect(150, 10, 40, 20);
+  fill(color(255, 140, 0));
+  rect(450, 10, 40, 20);
+  fill(255);
+  
+  text(myPoints, 170, 26);
+  text(opponentPoints, 470, 26);
+}
+function scorePoints(){
+  
+  if(xBall > 590){
+    myPoints += 1;
+    points.play();
+  }
+  if (xBall < 10){
+    opponentPoints += 1;
+    points.play();
+  }
+  
+}
+
+
