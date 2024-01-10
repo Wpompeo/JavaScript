@@ -1,3 +1,4 @@
+//ler arquivo json
 const dados = require("./clientes.json");
 
 console.log(dados);
